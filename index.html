@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    
     <title>Car Rental Pricing</title>
     <style>
         body {
@@ -109,6 +110,10 @@
 </div>
 
 <script>
+const BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
+    ? "http://127.0.0.1:8000"
+    : "https://car-rental-pricing.onrender.com";
+    
 let selectedPrice = null;
 
 // Select car
