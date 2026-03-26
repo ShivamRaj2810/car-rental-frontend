@@ -145,7 +145,7 @@ async function getPrice() {
     document.getElementById("result").innerHTML = "⏳ Calculating best price...";
 
     const token = localStorage.getItem("token");
-
+try{
 let res = await fetch(`${BASE_URL}/predict_price`, {
     method: "POST",
     headers: {
