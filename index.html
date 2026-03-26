@@ -113,9 +113,15 @@
 </div>
 
 <script>
+    
 if (!localStorage.getItem("token")) {
     window.location.href = "login.html";
 }
+
+    function logout() {
+    localStorage.removeItem("token");   // ❌ remove JWT
+    alert("Logged out successfully ✅");
+    window.location.href = "login.html";  // 🔄 redirect
     
 const BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
     ? "http://127.0.0.1:8000"
@@ -147,10 +153,6 @@ async function getPrice() {
 
     document.getElementById("result").innerHTML = "⏳ Calculating best price...";
 
-    function logout() {
-    localStorage.removeItem("token");   // ❌ remove JWT
-    alert("Logged out successfully ✅");
-    window.location.href = "login.html";  // 🔄 redirect
 }
 
     const token = localStorage.getItem("token");
