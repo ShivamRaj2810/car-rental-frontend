@@ -76,11 +76,12 @@
             font-weight: bold;
         }
     </style>
-</head>
-<body>
     <button onclick="logout()" style="position:absolute; top:20px; right:20px;">
     🚪 Logout
 </button>
+</head>
+<body>
+
 
 <div class="container">
     <h1>🚗 Dynamic Car Pricing</h1>
@@ -122,6 +123,7 @@ if (!localStorage.getItem("token")) {
     localStorage.removeItem("token");   // ❌ remove JWT
     alert("Logged out successfully ✅");
     window.location.href = "login.html";  // 🔄 redirect
+    }
     
 const BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
     ? "http://127.0.0.1:8000"
