@@ -78,6 +78,9 @@
     </style>
 </head>
 <body>
+    <button onclick="logout()" style="position:absolute; top:20px; right:20px;">
+    🚪 Logout
+</button>
 
 <div class="container">
     <h1>🚗 Dynamic Car Pricing</h1>
@@ -143,6 +146,12 @@ async function getPrice() {
     }
 
     document.getElementById("result").innerHTML = "⏳ Calculating best price...";
+
+    function logout() {
+    localStorage.removeItem("token");   // ❌ remove JWT
+    alert("Logged out successfully ✅");
+    window.location.href = "login.html";  // 🔄 redirect
+}
 
     const token = localStorage.getItem("token");
 try{
