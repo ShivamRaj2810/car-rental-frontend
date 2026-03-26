@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Car Rental Pricing</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .cards {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            width: 200px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .selected {
+            border: 3px solid #007bff;
+        }
+
+        .form {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🚗 Dynamic Car Pricing</h1>
+
+    <!-- Car Cards -->
+    <div class="cards">
+        <div class="card" onclick="selectCar(this,1500)">
+            <h3>🚗 Hatchback</h3>
+            <p>₹1500</p>
+        </div>
+
+        <div class="card" onclick="selectCar(this,2000)">
+            <h3>🚘 Sedan</h3>
+            <p>₹2000</p>
+        </div>
+
+        <div class="card" onclick="selectCar(this,3000)">
+            <h3>🚙 SUV</h3>
+            <p>₹3000</p>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="form">
+        <input type="text" id="location" placeholder="Enter city (e.g. Delhi)">
+        <button onclick="getPrice()">Get Price</button>
+    </div>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+let selectedPrice = null;
+
+// Select car
+function selectCar(element, price) {
+    document.querySelectorAll(".card").forEach(c => c.classList.remove("selected"));
+    element.classList.add("selected");
+    selectedPrice = price;
+}
+
+// Get price
+async function getPrice() {
+
+    if (!selectedPrice) {
+        alert("Please select a car type");
+        return;
+    }
+
+    let location = document.getElementById("location").value;
+
+    if (!location) {
+        alert("Enter location");
+        return;
+    }
+
+    document.getElementById("result").innerHTML = "⏳ Calculating best price...";
+
+    let token = localStorage.getItem("token");
+
+    try {
+        let res = await fetch("http://127.0.0.1:8000/predict_price", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                base_price: selectedPrice,
+                location: location
+            })
+        });
+
+        // ✅ HANDLE ERROR STATUS
+        if (!res.ok) {
+            let err = await res.text();
+            document.getElementById("result").innerHTML = "❌ Error: " + err;
+            return;
+        }
+
+        // ✅ PARSE RESPONSE
+        let data = await res.json();
+        console.log("API RESPONSE:", data);
+
+        // ✅ SHOW RESULT
+        document.getElementById("result").innerHTML = `
+            📍 ${location}<br>
+            🌦 ${data.weather}<br>
+            🚗 Cars: ${data.available_cars}<br>
+            ⭐ Rating: ${data.customer_rating}<br>
+            📅 Weekend: ${data.weekend ? "Yes" : "No"}<br>
+            💰 Price: ₹${data.dynamic_price.toFixed(2)}<br>
+            📈 Demand: ${data.demand.toFixed(2)}
+        `;
+
+    } catch (error) {
+        console.error("ERROR:", error);
+        document.getElementById("result").innerHTML = "❌ Failed to fetch data";
+    }
+}
+</script>
+
+</body>
+</html>
