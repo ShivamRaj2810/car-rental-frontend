@@ -112,23 +112,22 @@
 </div>
 
     
-
 <script>
-    
+
 if (!localStorage.getItem("token")) {
     window.location.href = "login.html";
 }
 
-    function logout() {
-    localStorage.removeItem("token");   // ❌ remove JWT
+function logout() {
+    localStorage.removeItem("token");
     alert("Logged out successfully ✅");
-    window.location.href = "login.html";  // 🔄 redirect
-    }
-    
+    window.location.href = "login.html";
+}
+
 const BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
     ? "http://127.0.0.1:8000"
     : "https://car-rental-pricing.onrender.com";
-    
+
 let selectedPrice = null;
 
 // Select car
@@ -155,34 +154,29 @@ async function getPrice() {
 
     document.getElementById("result").innerHTML = "⏳ Calculating best price...";
 
-}
-
     const token = localStorage.getItem("token");
-try{
-let res = await fetch(`${BASE_URL}/predict_price`, {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
-    },
-    body: JSON.stringify({
-        location: location,
-        base_price: selectedPrice
-    })
-});
 
-        // ✅ HANDLE ERROR STATUS
+    try {
+        let res = await fetch(`${BASE_URL}/predict_price`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({
+                location: location,
+                base_price: selectedPrice
+            })
+        });
+
         if (!res.ok) {
             let err = await res.text();
             document.getElementById("result").innerHTML = "❌ Error: " + err;
             return;
         }
 
-        // ✅ PARSE RESPONSE
         let data = await res.json();
-        console.log("API RESPONSE:", data);
 
-        // ✅ SHOW RESULT
         document.getElementById("result").innerHTML = `
             📍 ${location}<br>
             🌦 ${data.weather}<br>
@@ -198,7 +192,9 @@ let res = await fetch(`${BASE_URL}/predict_price`, {
         document.getElementById("result").innerHTML = "❌ Failed to fetch data";
     }
 }
+
 </script>
+
 
 </body>
 </html>
