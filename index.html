@@ -146,8 +146,10 @@ button.main:hover {
 <script>
 
 // 🔐 Check login FIRST
+let token; // ✅ GLOBAL
+
 window.onload = function () {
-    let token = localStorage.getItem("token");
+    token = localStorage.getItem("token");
 
     console.log("Token on load:", token);
 
